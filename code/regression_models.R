@@ -633,7 +633,6 @@ indepen_I <- regI_df %>%
         panel.grid.minor = element_blank()) +
   facet_grid(. ~ Pais)
 
-
 # Plotting results for Socio-demographic variables
 sociodem_I <- regI_df %>%
   mutate(term = factor(term, level=c("Color4", "age", "IncomeDo not know/ Prefer to not answer", "Income10 minimum wages or more", 

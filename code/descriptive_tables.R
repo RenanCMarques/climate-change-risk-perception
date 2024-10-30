@@ -281,3 +281,61 @@ summ.stats_2 <- Base %>%
 summ.stats_2_tex <- kable(summ.stats_2, "latex",  booktabs = T, digits = 2, align = c("l", rep("c",6)))
 
 writeLines(summ.stats_2_tex, 'tables/summ.stats_2.tex')
+
+################################################################################
+# Income distribution
+################################################################################
+
+Base %>%
+  mutate(renda1 = as.numeric(Income=="0 - 1 minimum wages"),
+         renda2 = as.numeric(Income=="1 - 2 minimum wages"),
+         renda3 = as.numeric(Income=="2 - 3 minimum wages"),
+         renda4 = as.numeric(Income=="3 - 5 minimum wages"),
+         renda5 = as.numeric(Income=="5 - 10 minimum wages"),
+         renda6 = as.numeric(Income=="10 minimum wages or more"),
+         renda7 = ifelse(Income_aux %in% c(98,99),1,0)) %>%
+  group_by(Country) %>%
+  summarise( "0 - 1 minimum wages" = percent(mean(renda1)),
+            "1 - 2 minimum wages" = percent(mean(renda2)),
+            "2 - 3 minimum wages" = percent(mean(renda3)),
+            "3 - 5 minimum wages" = percent(mean(renda4)),
+            "5 - 10 minimum wages" = percent(mean(renda5)),
+            "10 minimum wages or more" = percent(mean(renda6)),
+            "Do not know/ Prefer to not answer" = percent(mean(renda7))) %>%
+  mutate_if(is.numeric, format, digits=3,nsmall = 0) %>%
+  t() %>%
+  as.data.frame()
+
+Base %>%
+  mutate(renda1 = as.numeric(Income == "0 - 1 minimum wages"),
+         renda2 = as.numeric(Income == "1 - 2 minimum wages"),
+         renda3 = as.numeric(Income == "2 - 3 minimum wages"),
+         renda4 = as.numeric(Income == "3 - 5 minimum wages"),
+         renda5 = as.numeric(Income == "5 - 10 minimum wages"),
+         renda6 = as.numeric(Income == "10 minimum wages or more"),
+         renda7 = ifelse(Income_aux %in% c(98, 99), 1, 0)) %>%
+  group_by(Country) %>%
+  summarise(
+    renda1_sum = sum(renda1),
+    renda2_sum = sum(renda2),
+    renda3_sum = sum(renda3),
+    renda4_sum = sum(renda4),
+    renda5_sum = sum(renda5),
+    renda6_sum = sum(renda6),
+    renda7_sum = sum(renda7),
+    total_obs = n(),
+    total_valid_obs = total_obs - renda7_sum
+  ) %>%
+  mutate(
+    "0 - 1 minimum wages" = percent(renda1_sum / total_valid_obs),
+    "1 - 2 minimum wages" = percent(renda2_sum / total_valid_obs),
+    "2 - 3 minimum wages" = percent(renda3_sum / total_valid_obs),
+    "3 - 5 minimum wages" = percent(renda4_sum / total_valid_obs),
+    "5 - 10 minimum wages" = percent(renda5_sum / total_valid_obs),
+    "10 minimum wages or more" = percent(renda6_sum / total_valid_obs)
+  ) %>%
+  dplyr::select(-c(renda1_sum, renda2_sum, renda3_sum, renda4_sum, renda5_sum, renda6_sum, renda7_sum, total_obs, total_valid_obs)) %>%
+  mutate_if(is.numeric, format, digits = 3, nsmall = 0) %>%
+  t() %>%
+  as.data.frame()
+

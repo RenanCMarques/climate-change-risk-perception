@@ -205,7 +205,8 @@ Base <- Base %>%
   # Risk Perception
   mutate('Risk Perception' = (`Risk Perception - Temporal Dimension` + `Risk Perception - Spatial Dimension`)/2) %>%
   # Risk Perception (alternative)
-  mutate('Risk Perception - Spatial Dimension (alt)' = (P8_1 + P8_2)/2)
+  mutate('Risk Perception - Spatial Dimension (alt1)' = (P8_1 + P8_2 + P8_7)/3) %>%
+  mutate('Risk Perception - Spatial Dimension (alt2)' = (P8_3 + P8_4 + P8_5 + P8_6)/4)
 
 #------------------------------------------------------------------------------#
 ### Saving database "Base" as R Data file ######################################
