@@ -17,7 +17,7 @@ setwd("C:/Users/renan/Google Drive/FGV RI/Determinants of Individual-Level Clima
 packages <- c('tidyverse', 'fixest', 'sjPlot', 'modelsummary', 
               'performance', 'car', 'psych', 'REdaS', 'knitr',
               'fastDummies', 'psych', 'factoextra', 'xtable',
-              'pwr', 'broom', 'lm.beta', 'kableExtra')
+              'pwr', 'broom', 'lm.beta', 'kableExtra', 'stargazer')
 
 # Checking if is installed (and install if not)
 
@@ -519,9 +519,9 @@ kable(adjusted_p, "latex",  booktabs = T, digits = 4, align = c(rep("c",6)))
 #------------------------------------------------------------------------------#
 
 ## Spatial ####
-spatial_stepwise_climate <- feols(rpd ~ csw(sk, ok, hk, wo, ha, ii, ei, dn, pn,
+spatial_stepwise_climate <- feols(rpd ~ csw(sk, ok, hk, wo, ii, ei, nep, dn, pn,
                                    pi_lf, pi_cs, Female, Escolaridade_3, Religion, Income, age, Color4,
-                                   nep, pe, pv), 
+                                   ha, pe, pv), 
                          data = Base, 
                          weights = ~ ponde2, 
                          vcov = "hetero")
@@ -551,9 +551,9 @@ modelsummary(spatial_stepwise,
 
 ## Temporal ####
 
-temporal_stepwise_climate <- feols(rpt ~ csw(sk, ok, hk, wo, ha, ii, ei, dn, pn,
-                                            pi_lf, pi_cs, Female, Escolaridade_3, Religion, Income, age, Color4,
-                                            nep, pe, pv), 
+temporal_stepwise_climate <- feols(rpt ~ csw(sk, ok, hk, wo, ii, ei, nep, dn, pn,
+                                             pi_lf, pi_cs, Female, Escolaridade_3, Religion, Income, age, Color4,
+                                             ha, pe, pv),
                          data = Base, 
                          weights = ~ ponde2, 
                          vcov = "hetero")
@@ -583,9 +583,9 @@ modelsummary(temporal_stepwise_climate,
 
 ## Index ####
 
-index_stepwise_climate <- feols(rp ~ csw(sk, ok, hk, wo, ha, ii, ei, dn, pn,
-                                          pi_lf, pi_cs, Female, Escolaridade_3, Religion, Income, age, Color4,
-                                          nep, pe, pv), 
+index_stepwise_climate <- feols(rp ~ csw(sk, ok, hk, wo, ii, ei, nep, dn, pn,
+                                         pi_lf, pi_cs, Female, Escolaridade_3, Religion, Income, age, Color4,
+                                         ha, pe, pv), 
                           data = Base, 
                           weights = ~ ponde2, 
                           vcov = "hetero")
@@ -694,6 +694,14 @@ Base %>%
   )
 
 ## Political Ideology ####
+# Fit the linear model
+model <- lm(P34 ~ P32, data = Base)
+
+stargazer(model, type = "latex", out = "regression_summary.tex",
+          title = "Regression Results",
+          label = "tab:regression_results")
+
+# Create the plot
 Base %>%
   select(P32, P34) %>%
   mutate(P34 = ifelse(P34 == 6, NA, P34)) %>%
@@ -705,7 +713,33 @@ Base %>%
     title = "Political Ideology: Left-Right x Conservative-Progressive",
     x = "Left -> Right",
     y = "Progressive -> Conservative"
-  )
+  ) +
+  theme_classic()
+
+# Drop observations with P32 == 9 or 10 and P34 == 1 or 2
+filtered_data <- Base %>%
+  filter(!(P32 %in% c(9, 10) & P34 %in% c(1, 2))) %>% 
+  mutate(P34 = ifelse(P34 == 6, NA, P34)) # Replacing P34 == 6 with NA
+
+model <- lm(P34 ~ P32, data = filtered_data)
+
+stargazer(model, type = "latex", out = "regression_summary.tex",
+          title = "Regression Results",
+          label = "tab:regression_results")
+
+
+# Create the plot
+filtered_data %>%
+  ggplot(aes(P32, P34)) +
+  geom_point() +
+  geom_jitter() +
+  geom_smooth(method = "lm") +
+  labs(
+    title = "Political Ideology: Left-Right x Conservative-Progressive",
+    x = "Left -> Right",
+    y = "Progressive -> Conservative"
+  ) +
+  theme_classic()
 
 ## Worry x Perceived Vulnerability ####
 cor1 <- lm(pv ~ wo, data = Base)

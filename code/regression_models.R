@@ -6,7 +6,7 @@ rm(list = ls())
 
 # Setting directory: adjust accordingly
 
-setwd()
+setwd("G:/My Drive/FGV RI/Determinants of Individual-Level Climate Risk Perception in Latin America/data and code availability")
 
 #------------------------------------------------------------------------------#
 ### Loading and installing necessary packages ##################################
@@ -58,7 +58,6 @@ Base <- Base %>%
     rpd = `Risk Perception - Spatial Dimension`,
     rpt = `Risk Perception - Temporal Dimension`,
     rp = `Risk Perception`,
-    rp2 = `Risk Perception - Spatial Dimension (alt)`,
     pi_lf = `Political Ideology (Left-Right)`,
     pi_cs = `Political Ideology (Conservatism-Progressive)`, 
     sk = `Subjective knowledge`,
@@ -416,7 +415,8 @@ label_regs_total_I <- tidy(regs_total_I, conf.int = TRUE, conf.level = 0.95) %>%
 
 # Independent Variables
 indep_I <- plot_coefs(regs_total_I, scale = TRUE,
-                      coefs = indep, robust = TRUE) +
+                      coefs = indep, robust = TRUE,
+                      point.shape = "circle") +
   xlim(c(-0.20, 0.45)) +
   geom_text(inherit.aes = FALSE, 
             data = subset(label_regs_total_I, term %in% indep_sub),
@@ -430,11 +430,13 @@ indep_I <- plot_coefs(regs_total_I, scale = TRUE,
         axis.title.y = element_blank(),
         axis.title.x = element_text(size = 9),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
 
 # Socio-economic Variables
 socio_dem_I <- plot_coefs(regs_total_I, scale = TRUE,
-                          coefs = socio_dem, robust = TRUE) +
+                          coefs = socio_dem, robust = TRUE,
+                          point.shape = "circle") +
   xlim(c(-0.20, 0.45)) +
   geom_text(inherit.aes = FALSE, 
             data = subset(label_regs_total_I, term %in% socio_dem_sub),
@@ -448,7 +450,8 @@ socio_dem_I <- plot_coefs(regs_total_I, scale = TRUE,
         axis.title.y = element_blank(),
         axis.title.x = element_text(size = 9),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
 
 # Joining both plots
 grid.arrange(indep_I, socio_dem_I,
@@ -468,7 +471,8 @@ label_regs_total_II <- tidy(regs_total_II, conf.int = TRUE, conf.level = 0.95) %
 
 # Independent Variables
 indep_II <- plot_coefs(regs_total_II, scale = TRUE,
-                       coefs = indep, robust = TRUE) +
+                       coefs = indep, robust = TRUE, colors = "orange",
+                       point.shape = "circle") +
   xlim(c(-0.35, 0.45)) +
   geom_text(inherit.aes = FALSE, 
             data = subset(label_regs_total_II, term %in% indep_sub),
@@ -482,11 +486,13 @@ indep_II <- plot_coefs(regs_total_II, scale = TRUE,
         axis.title.y = element_blank(),
         axis.title.x = element_text(size = 9),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
 
 # Socio-economic Variables
 socio_dem_II <- plot_coefs(regs_total_II, scale = TRUE,
-                           coefs = socio_dem, robust = TRUE) +
+                           coefs = socio_dem, robust = TRUE, colors = "orange",
+                           point.shape = "circle") +
   xlim(c(-0.35, 0.45)) +
   geom_text(inherit.aes = FALSE, 
             data = subset(label_regs_total_II, term %in% socio_dem_sub),
@@ -500,12 +506,13 @@ socio_dem_II <- plot_coefs(regs_total_II, scale = TRUE,
         axis.title.y = element_blank(),
         axis.title.x = element_text(size = 9),
         panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
 
 # Joining both plots
 grid.arrange(indep_II, socio_dem_II,
              nrow = 1,
-             widths = c(1,1.05)) 
+             widths = c(1,1.08)) 
 
 #------------------------------------------------------------------------------#
 ### Plot: (III) Risk Perception (OLS) ##########################################
